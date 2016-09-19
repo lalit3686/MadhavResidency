@@ -1,5 +1,25 @@
 package com.example.csvtocontact;
 
+import android.app.ListActivity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,20 +30,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import android.app.ListActivity;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-
 public class MainActivity extends ListActivity {
+	private static final String TAG = "Madhav";
 	ArrayList<MyContact> cArr = new ArrayList<MyContact>();
 
 	@Override
@@ -35,6 +43,40 @@ public class MainActivity extends ListActivity {
 		((ListView) findViewById(android.R.id.list))
 				.setAdapter(new MySimpleArrayAdapter(this));
 
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
+		DatabaseReference myRef = database.getReference("members");
+		myRef.addChildEventListener(new ChildEventListener() {
+			@Override
+			public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+				Contact value = dataSnapshot.getValue(Contact.class);
+				Log.d(TAG, "Value is: " + value.Name);
+				Log.d(TAG, "Value is: " + value.Cell_1);
+			}
+
+			@Override
+			public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+				Contact value = dataSnapshot.getValue(Contact.class);
+				Log.d(TAG, "Value is: " + value.Name);
+				Log.d(TAG, "Value is: " + value.Cell_1);
+			}
+
+			@Override
+			public void onChildRemoved(DataSnapshot dataSnapshot) {
+				Contact value = dataSnapshot.getValue(Contact.class);
+				Log.d(TAG, "Value is: " + value.Name);
+			}
+
+			@Override
+			public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+				Contact value = dataSnapshot.getValue(Contact.class);
+				Log.d(TAG, "Value is: " + value.Name);
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+				Log.w(TAG, "Failed to read value.", databaseError.toException());
+			}
+		});
 	}
 
 	public class MySimpleArrayAdapter extends BaseAdapter {

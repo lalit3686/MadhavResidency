@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "1041835270163",
+    "firebase_url": "https://madhav-64124.firebaseio.com",
+    "project_id": "madhav-64124",
+    "storage_bucket": "madhav-64124.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041835270163:android:c1e91b11348481f6",
+        "android_client_info": {
+          "package_name": "com.vishal.madhav"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041835270163-80sau2oovk91cp1c5t7s6lcuk89ab54b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_gELKYkewY7i9b0Ri6TPp2u5B0rLl7AE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041835270163:android:057611dad233b4cd",
+        "android_client_info": {
+          "package_name": "com.example.csvtocontact"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041835270163-80sau2oovk91cp1c5t7s6lcuk89ab54b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_gELKYkewY7i9b0Ri6TPp2u5B0rLl7AE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
