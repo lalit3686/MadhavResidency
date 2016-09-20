@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1041835270163:android:c1e91b11348481f6",
+        "mobilesdk_app_id": "1:1041835270163:android:057611dad233b4cd",
         "android_client_info": {
-          "package_name": "com.vishal.madhav"
+          "package_name": "com.example.csvtocontact"
         }
       },
       "oauth_client": [
@@ -39,9 +39,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1041835270163:android:057611dad233b4cd",
+        "mobilesdk_app_id": "1:1041835270163:android:643864a46ee5afac",
         "android_client_info": {
-          "package_name": "com.example.csvtocontact"
+          "package_name": "com.ccrazycoder.madhav"
         }
       },
       "oauth_client": [
