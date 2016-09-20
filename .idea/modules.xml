@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CSVtoContact.iml" filepath="$PROJECT_DIR$/CSVtoContact.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MadhavResidency.iml" filepath="$PROJECT_DIR$/MadhavResidency.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

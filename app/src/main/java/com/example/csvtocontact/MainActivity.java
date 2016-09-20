@@ -3,6 +3,7 @@ package com.example.csvtocontact;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,220 +21,166 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 public class MainActivity extends ListActivity {
-	private static final String TAG = "Madhav";
-	ArrayList<MyContact> cArr = new ArrayList<MyContact>();
+    private static final String TAG = "Madhav";
+    ArrayList<Contact> cArr = new ArrayList<Contact>();
+    private Typeface myTypeface;
+    private ListView lstView;
+    private MySimpleArrayAdapter mAdapter;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		boolean flg = readCSV("");
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-		((ListView) findViewById(android.R.id.list))
-				.setAdapter(new MySimpleArrayAdapter(this));
+        lstView = (ListView) findViewById(android.R.id.list);
 
-		FirebaseDatabase database = FirebaseDatabase.getInstance();
-		FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        mAdapter = new MySimpleArrayAdapter(this);
+        lstView.setAdapter(mAdapter);
 
-		DatabaseReference myRef = database.getReference("members");
-		myRef.keepSynced(true);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
+        DatabaseReference myRef = database.getReference("members");
+        myRef.keepSynced(true);
+        myTypeface = Typeface.createFromAsset(
+                this.getAssets(),
+                "fonts/Roboto-Regular.ttf");
 
-		myRef.addChildEventListener(new ChildEventListener() {
-			@Override
-			public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-				Contact value = dataSnapshot.getValue(Contact.class);
-				Log.d(TAG, "Value is: " + value.Name);
-				Log.d(TAG, "Value is: " + value.Cell_1);
-			}
+        cArr.clear();
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Contact value = null;
+                try {
+                    Log.e(TAG, dataSnapshot.getKey());
+                    value = dataSnapshot.getValue(Contact.class);
+                    addContacts(value);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
-			@Override
-			public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-				Contact value = dataSnapshot.getValue(Contact.class);
-				Log.d(TAG, "Value is: " + value.Name);
-				Log.d(TAG, "Value is: " + value.Cell_1);
-			}
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Contact value = dataSnapshot.getValue(Contact.class);
+                cArr.set(Integer.parseInt(dataSnapshot.getKey()) - 1, value);
+                mAdapter.notifyDataSetChanged();
+            }
 
-			@Override
-			public void onChildRemoved(DataSnapshot dataSnapshot) {
-				Contact value = dataSnapshot.getValue(Contact.class);
-				Log.d(TAG, "Value is: " + value.Name);
-			}
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Contact value = dataSnapshot.getValue(Contact.class);
+                cArr.remove(Integer.parseInt(dataSnapshot.getKey()) - 1);
+                mAdapter.notifyDataSetChanged();
+            }
 
-			@Override
-			public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-				Contact value = dataSnapshot.getValue(Contact.class);
-				Log.d(TAG, "Value is: " + value.Name);
-			}
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
-			@Override
-			public void onCancelled(DatabaseError databaseError) {
-				Log.w(TAG, "Failed to read value.", databaseError.toException());
-			}
-		});
-	}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
-	public class MySimpleArrayAdapter extends BaseAdapter {
-		private final Context context;
-		
+    private void addContacts(Contact objContact) {
+        cArr.add(objContact);
+    }
 
-		public MySimpleArrayAdapter(Context context) {
-			this.context = context;
-		}
+    public class MySimpleArrayAdapter extends BaseAdapter {
+        private final Context context;
+        ViewHolder holder;
 
-		/********* Create a holder Class to contain inflated xml file elements *********/
-		public class ViewHolder {
+        public MySimpleArrayAdapter(Context context) {
+            this.context = context;
+        }
 
-			public TextView name;
-			public TextView mobile;
-			public TextView cell;
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
 
-		}
+            View vi = convertView;
 
-		ViewHolder holder;
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                vi = inflater.inflate(R.layout.row_list, null);
 
-			View vi = convertView;
-
-			if (convertView == null) {
-				LayoutInflater inflater = (LayoutInflater) context
-						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				/****** Inflate tabitem.xml file for each row ( Defined below ) *******/
-				vi = inflater.inflate(R.layout.row_list, null);
-
-				/****** View Holder Object to contain tabitem.xml file elements ******/
-
-				holder = new ViewHolder();
-				holder.name = (TextView) vi.findViewById(R.id.txtName);
-				holder.mobile = (TextView) vi.findViewById(R.id.txtMobile);
-				holder.cell = (TextView) vi.findViewById(R.id.txtCell);
-
-				/************ Set holder with LayoutInflater ************/
-				vi.setTag(holder);
-			} else
-				holder = (ViewHolder) vi.getTag();
-
-			holder.name.setText(cArr.get(position).name + "\n"
-					+ cArr.get(position).block + " - "
-					+ cArr.get(position).blockno);
-			holder.mobile.setText(cArr.get(position).mobile);
-			if(cArr.get(position).cell!= null && cArr.get(position).cell.length()>0){
-				holder.cell.setText(cArr.get(position).cell);
-			}
-			
-			holder.mobile.setTag(cArr.get(position).mobile);
-			holder.mobile.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + (String)v.getTag()));
-					startActivity(intent);
-				}
-			});
-			
-			holder.cell.setTag(cArr.get(position).cell);
-			holder.cell.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + (String)v.getTag()));
-					startActivity(intent);
-				}
-			});
-			
-			return vi;
-		}
-
-		
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+                holder = new ViewHolder();
+                holder.name = (TextView) vi.findViewById(R.id.txtName);
+                holder.block = (TextView) vi.findViewById(R.id.txtBlock);
+                holder.cellone = (TextView) vi.findViewById(R.id.txtMobile);
+                holder.celltwo = (TextView) vi.findViewById(R.id.txtCell);
+                vi.setTag(holder);
+            } else
+                holder = (ViewHolder) vi.getTag();
 
 
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return cArr.size();
-		}
-	}
+            holder.name.setTypeface(myTypeface);
+            holder.block.setTypeface(myTypeface);
+            holder.cellone.setTypeface(myTypeface);
+            holder.celltwo.setTypeface(myTypeface);
 
-	private boolean readCSV(String path) {
-		cArr.clear();
-		try {
+            holder.name.setText(cArr.get(position).Name);
+            holder.block.setText(cArr.get(position).Block + " - " + cArr.get(position).Number);
 
-			// create BufferedReader to read CSV file
-			// BufferedInputStream bri = new
-			// BufferedInputStream(getAssets().open(getAssets().list("")[0]));
-			// AssetFileDescriptor descriptor =
-			// getAssets().openFd("MRContacts.csv");
-			// FileReader reader = new
-			// FileReader(descriptor.getFileDescriptor());
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					getAssets().open("MRContacts.csv"), "UTF-8"));
-			// BufferedReader br = new BufferedReader( new
-			// FileReader(createFileFromInputStream(getAssets().open("MRContacts.csv"))));
-			String record = "";
-			StringTokenizer st = null;
-			int rowNumber = 0;
-			int cellIndex = 0;
+            if (cArr.get(position).CellOne != null && cArr.get(position).CellOne.length() > 0) {
+                holder.cellone.setText(cArr.get(position).CellOne);
+            } else {
+                holder.cellone.setVisibility(View.GONE);
+            }
 
-			// read comma separated file line by line
-			while ((record = br.readLine()) != null) {
-				rowNumber++;
-				MyContact c = new MyContact();
-				// break comma separated line using ","
-				st = new StringTokenizer(record, ",");
-				while (st.hasMoreTokens()) {
-					// display CSV values
-					cellIndex++;
-					String tmp = st.nextToken();
-					if (cellIndex == 2) {
-						c.name = tmp;
-					} else if (cellIndex == 3) {
-						c.block = tmp;
-					} else if (cellIndex == 4) {
-						c.blockno = tmp;
-					} else if (cellIndex == 5) {
-						c.mobile = tmp;
-					} else if (cellIndex == 6) {
-						c.cell = tmp;
-					}
-					System.out.println("Cell column index: " + cellIndex);
-					System.out.println("Cell Value: " + tmp);
-					
-					System.out.println("---");
-				}
+            if (cArr.get(position).CellTwo != null && cArr.get(position).CellTwo.length() > 0) {
+                holder.celltwo.setText(cArr.get(position).CellTwo);
+            } else {
+                holder.celltwo.setVisibility(View.GONE);
+            }
 
-				cArr.add(c);
+            holder.cellone.setTag(cArr.get(position).CellOne);
+            holder.cellone.setOnClickListener(new OnClickListener() {
 
-				// reset cell Index number
-				cellIndex = 0;
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + (String) v.getTag()));
+                    startActivity(intent);
+                }
+            });
 
-			}
+            holder.celltwo.setTag(cArr.get(position).CellTwo);
+            holder.celltwo.setOnClickListener(new OnClickListener() {
 
-			System.out.println("rowNumber: " + rowNumber);
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + (String) v.getTag()));
+                    startActivity(intent);
+                }
+            });
+            return vi;
+        }
 
-		} catch (Exception e) {
-			System.out.println("Exception while reading csv file: " + e);
-		}
-		return true;
-	}
-	public static class MyContact {
-		public String name, block, blockno, mobile, cell;
-	}
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public int getCount() {
+            return cArr.size();
+        }
+
+        public class ViewHolder {
+            public TextView name;
+            public TextView block;
+            public TextView cellone;
+            public TextView celltwo;
+        }
+    }
 }
