@@ -1,10 +1,12 @@
 package com.ccrazycoder.madhav;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
         setSupportActionBar(toolbar);
 
         lstView = (ListView) findViewById(R.id.lstContacts);
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
 
             View vi = convertView;
 
@@ -129,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
                 holder.block = (TextView) vi.findViewById(R.id.txtBlock);
                 holder.cellone = (TextView) vi.findViewById(R.id.txtMobile);
                 holder.celltwo = (TextView) vi.findViewById(R.id.txtCell);
+                holder.vehicleone = (TextView) vi.findViewById(R.id.txtVehicleOne);
+                holder.vehicletwo = (TextView) vi.findViewById(R.id.txtVehicleTwo);
+                holder.carone = (TextView) vi.findViewById(R.id.txtCarOne);
+                holder.cartwo = (TextView) vi.findViewById(R.id.txtCarTwo);
                 vi.setTag(holder);
             } else
                 holder = (ViewHolder) vi.getTag();
@@ -143,24 +149,78 @@ public class MainActivity extends AppCompatActivity {
             holder.block.setText(cArr.get(position).Block + " - " + cArr.get(position).Number);
 
             if (cArr.get(position).CellOne != null && cArr.get(position).CellOne.length() > 0) {
+                holder.cellone.setVisibility(View.VISIBLE);
                 holder.cellone.setText(cArr.get(position).CellOne);
             } else {
                 holder.cellone.setVisibility(View.GONE);
             }
 
             if (cArr.get(position).CellTwo != null && cArr.get(position).CellTwo.length() > 0) {
+                holder.celltwo.setVisibility(View.VISIBLE);
                 holder.celltwo.setText(cArr.get(position).CellTwo);
             } else {
                 holder.celltwo.setVisibility(View.GONE);
+            }
+
+            if (cArr.get(position).VehicleOne != null && cArr.get(position).VehicleOne.length() > 0) {
+                holder.vehicleone.setVisibility(View.VISIBLE);
+                holder.vehicleone.setText(cArr.get(position).VehicleOne);
+            } else {
+                holder.vehicleone.setVisibility(View.GONE);
+            }
+
+            if (cArr.get(position).VehicleTwo != null && cArr.get(position).VehicleTwo.length() > 0) {
+                holder.vehicletwo.setVisibility(View.VISIBLE);
+                holder.vehicletwo.setText(cArr.get(position).VehicleTwo);
+            } else {
+                holder.vehicletwo.setVisibility(View.GONE);
+            }
+
+            if (cArr.get(position).CarOne != null && cArr.get(position).CarOne.length() > 0) {
+                holder.carone.setVisibility(View.VISIBLE);
+                holder.carone.setText(cArr.get(position).CarOne);
+            } else {
+                holder.carone.setVisibility(View.GONE);
+            }
+
+            if (cArr.get(position).CarTwo != null && cArr.get(position).CarTwo.length() > 0) {
+                holder.cartwo.setVisibility(View.VISIBLE);
+                holder.cartwo.setText(cArr.get(position).CarTwo);
+            } else {
+                holder.cartwo.setVisibility(View.GONE);
             }
 
             holder.cellone.setTag(cArr.get(position).CellOne);
             holder.cellone.setOnClickListener(new OnClickListener() {
 
                 @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + (String) v.getTag()));
-                    startActivity(intent);
+                public void onClick(final View v) {
+
+                    final CharSequence[] items = {"Call", "SMS"};
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle(cArr.get(position).Name);
+
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+
+                            if (items[item].equals("Call")) {
+                                // invoke call functionality
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + (String) v.getTag()));
+                                startActivity(intent);
+                            }
+
+                            if (items[item].equals("SMS")) {
+                                String number = ((String) v.getTag());  // The number on which you want to send SMS
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
+                                // invoke sms functionality
+                            }
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    alert.setCanceledOnTouchOutside(true);
+
                 }
             });
 
@@ -168,9 +228,31 @@ public class MainActivity extends AppCompatActivity {
             holder.celltwo.setOnClickListener(new OnClickListener() {
 
                 @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + (String) v.getTag()));
-                    startActivity(intent);
+                public void onClick(final View v) {
+                    final CharSequence[] items = {"Call", "SMS"};
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle(cArr.get(position).Name);
+
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+
+                            if (items[item].equals("Call")) {
+                                // invoke call functionality
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + (String) v.getTag()));
+                                startActivity(intent);
+                            }
+
+                            if (items[item].equals("SMS")) {
+                                String number = ((String) v.getTag());  // The number on which you want to send SMS
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
+                                // invoke sms functionality
+                            }
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    alert.setCanceledOnTouchOutside(true);
                 }
             });
             return vi;
@@ -196,6 +278,11 @@ public class MainActivity extends AppCompatActivity {
             public TextView block;
             public TextView cellone;
             public TextView celltwo;
+            public TextView vehicleone;
+            public TextView vehicletwo;
+            public TextView carone;
+            public TextView cartwo;
+
         }
     }
 }

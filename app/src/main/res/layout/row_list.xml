@@ -45,4 +45,48 @@
         android:maxLines="1"
         android:text="Test"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/txtVehicleOne"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtCell"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="Test"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/txtVehicleTwo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtVehicleOne"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="Test"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/txtCarOne"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtVehicleTwo"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="Test"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/txtCarTwo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtCarOne"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="Test"
+        android:textSize="16sp" />
 </RelativeLayout>
