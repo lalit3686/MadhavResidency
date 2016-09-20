@@ -6,4 +6,6 @@
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
     <string name="str_search_hint">Name or Block or Vehicle Number</string>
+    <string name="title_activity_about_me">AboutMe</string>
+    <string name="str_aboutme_para">Hello Members,\nThis App was designed to help each of the Member of Madhav Residency ! \n\nStill We are in process of collecting Data. Let me know if there is any correction in the Any of the detail. We\'ll update that soon. \n\nInform me on the given Contact Details.\n\nFeedbacks are highly appreciated !!!</string>
 </resources>

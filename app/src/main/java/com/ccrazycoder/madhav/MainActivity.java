@@ -14,6 +14,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 this.getAssets(),
                 "fonts/Roboto-Regular.ttf");
 
+        edtSearch.setTypeface(myTypeface);
         cArr.clear();
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -129,6 +132,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.actionabout) {
+            startActivity(new Intent(MainActivity.this, AboutMe.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void addContacts(Contact objContact) {
         cArr.add(objContact);
     }
@@ -139,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         private List<Contact> originalData = null;
         private List<Contact> filteredData = null;
         private ItemFilter mFilter = new ItemFilter();
+
         public MySimpleArrayAdapter(Context context) {
             this.context = context;
             this.filteredData = cArr;
