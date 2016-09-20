@@ -3,18 +3,23 @@ package com.ccrazycoder.madhav;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Madhav";
@@ -33,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Typeface myTypeface;
     private ListView lstView;
     private MySimpleArrayAdapter mAdapter;
+    private EditText edtSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +54,25 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new MySimpleArrayAdapter(this);
         lstView.setAdapter(mAdapter);
 
+        edtSearch = (EditText) findViewById(R.id.edtSearch);
+        edtSearch.addTextChangedListener(new TextWatcher() {
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mAdapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+        });
         try {
             if (!isInitialized) {
                 FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -111,9 +136,13 @@ public class MainActivity extends AppCompatActivity {
     public class MySimpleArrayAdapter extends BaseAdapter {
         private final Context context;
         ViewHolder holder;
-
+        private List<Contact> originalData = null;
+        private List<Contact> filteredData = null;
+        private ItemFilter mFilter = new ItemFilter();
         public MySimpleArrayAdapter(Context context) {
             this.context = context;
+            this.filteredData = cArr;
+            this.originalData = cArr;
         }
 
         @Override
@@ -140,57 +169,62 @@ public class MainActivity extends AppCompatActivity {
                 holder = (ViewHolder) vi.getTag();
 
 
+            if (position % 2 == 0) {
+                vi.setBackgroundColor(Color.LTGRAY);
+            } else {
+                vi.setBackgroundColor(Color.WHITE);
+            }
             holder.name.setTypeface(myTypeface);
             holder.block.setTypeface(myTypeface);
             holder.cellone.setTypeface(myTypeface);
             holder.celltwo.setTypeface(myTypeface);
 
-            holder.name.setText(cArr.get(position).Name);
-            holder.block.setText(cArr.get(position).Block + " - " + cArr.get(position).Number);
+            holder.name.setText(filteredData.get(position).Name);
+            holder.block.setText(filteredData.get(position).Block + " - " + filteredData.get(position).Number);
 
-            if (cArr.get(position).CellOne != null && cArr.get(position).CellOne.length() > 0) {
+            if (filteredData.get(position).CellOne != null && filteredData.get(position).CellOne.length() > 0) {
                 holder.cellone.setVisibility(View.VISIBLE);
-                holder.cellone.setText(cArr.get(position).CellOne);
+                holder.cellone.setText(filteredData.get(position).CellOne);
             } else {
                 holder.cellone.setVisibility(View.GONE);
             }
 
-            if (cArr.get(position).CellTwo != null && cArr.get(position).CellTwo.length() > 0) {
+            if (filteredData.get(position).CellTwo != null && filteredData.get(position).CellTwo.length() > 0) {
                 holder.celltwo.setVisibility(View.VISIBLE);
-                holder.celltwo.setText(cArr.get(position).CellTwo);
+                holder.celltwo.setText(filteredData.get(position).CellTwo);
             } else {
                 holder.celltwo.setVisibility(View.GONE);
             }
 
-            if (cArr.get(position).VehicleOne != null && cArr.get(position).VehicleOne.length() > 0) {
+            if (filteredData.get(position).VehicleOne != null && filteredData.get(position).VehicleOne.length() > 0) {
                 holder.vehicleone.setVisibility(View.VISIBLE);
-                holder.vehicleone.setText(cArr.get(position).VehicleOne);
+                holder.vehicleone.setText(filteredData.get(position).VehicleOne);
             } else {
                 holder.vehicleone.setVisibility(View.GONE);
             }
 
-            if (cArr.get(position).VehicleTwo != null && cArr.get(position).VehicleTwo.length() > 0) {
+            if (filteredData.get(position).VehicleTwo != null && filteredData.get(position).VehicleTwo.length() > 0) {
                 holder.vehicletwo.setVisibility(View.VISIBLE);
-                holder.vehicletwo.setText(cArr.get(position).VehicleTwo);
+                holder.vehicletwo.setText(filteredData.get(position).VehicleTwo);
             } else {
                 holder.vehicletwo.setVisibility(View.GONE);
             }
 
-            if (cArr.get(position).CarOne != null && cArr.get(position).CarOne.length() > 0) {
+            if (filteredData.get(position).CarOne != null && filteredData.get(position).CarOne.length() > 0) {
                 holder.carone.setVisibility(View.VISIBLE);
-                holder.carone.setText(cArr.get(position).CarOne);
+                holder.carone.setText(filteredData.get(position).CarOne);
             } else {
                 holder.carone.setVisibility(View.GONE);
             }
 
-            if (cArr.get(position).CarTwo != null && cArr.get(position).CarTwo.length() > 0) {
+            if (filteredData.get(position).CarTwo != null && filteredData.get(position).CarTwo.length() > 0) {
                 holder.cartwo.setVisibility(View.VISIBLE);
-                holder.cartwo.setText(cArr.get(position).CarTwo);
+                holder.cartwo.setText(filteredData.get(position).CarTwo);
             } else {
                 holder.cartwo.setVisibility(View.GONE);
             }
 
-            holder.cellone.setTag(cArr.get(position).CellOne);
+            holder.cellone.setTag(filteredData.get(position).CellOne);
             holder.cellone.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -199,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                     final CharSequence[] items = {"Call", "SMS"};
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle(cArr.get(position).Name);
+                    builder.setTitle(filteredData.get(position).Name);
 
                     builder.setItems(items, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) {
@@ -224,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            holder.celltwo.setTag(cArr.get(position).CellTwo);
+            holder.celltwo.setTag(filteredData.get(position).CellTwo);
             holder.celltwo.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -232,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                     final CharSequence[] items = {"Call", "SMS"};
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle(cArr.get(position).Name);
+                    builder.setTitle(filteredData.get(position).Name);
 
                     builder.setItems(items, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) {
@@ -258,19 +292,64 @@ public class MainActivity extends AppCompatActivity {
             return vi;
         }
 
-        @Override
-        public Object getItem(int position) {
-            return null;
+        public Filter getFilter() {
+            return mFilter;
         }
 
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
         public int getCount() {
-            return cArr.size();
+            return filteredData.size();
+        }
+
+        public Object getItem(int position) {
+            return filteredData.get(position);
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        private class ItemFilter extends Filter {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                String filterString = constraint.toString().toLowerCase();
+
+                FilterResults results = new FilterResults();
+
+                final List<Contact> list = cArr;
+
+                int count = list.size();
+                final ArrayList<Contact> nlist = new ArrayList<Contact>(count);
+
+                Contact filterableString;
+
+                for (int i = 0; i < count; i++) {
+                    filterableString = list.get(i);
+                    if (filterableString.Name.toLowerCase().contains(filterString)) {
+                        nlist.add(filterableString);
+                    } else {
+                        filterString = filterString.replaceAll("\\s", "");
+                        if ((filterableString.Block.toLowerCase() + filterableString.Number.toLowerCase()).contains(filterString)) {
+                            nlist.add(filterableString);
+                        } else if (filterableString.VehicleOne.toLowerCase().contains(filterString) || filterableString.VehicleTwo.toLowerCase().contains(filterString) || filterableString.CarOne.toLowerCase().contains(filterString) || filterableString.CarTwo.toLowerCase().contains(filterString)) {
+                            nlist.add(filterableString);
+                        }
+                    }
+                }
+
+                results.values = nlist;
+                results.count = nlist.size();
+
+                return results;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredData = (ArrayList<Contact>) results.values;
+                notifyDataSetChanged();
+            }
+
         }
 
         public class ViewHolder {

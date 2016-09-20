@@ -13,11 +13,22 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize" />
 
+    <EditText
+        android:id="@+id/edtSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/my_awesome_toolbar"
+        android:drawableRight="@android:drawable/ic_menu_search"
+        android:hint="@string/str_search_hint"
+        android:maxLines="1"
+        android:padding="5dp"
+        android:textColor="@color/Teal" />
+
     <ListView
         android:id="@+id/lstContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/my_awesome_toolbar"
+        android:layout_below="@+id/edtSearch"
         android:animationCache="false"
         android:divider="@color/Teal"
         android:dividerHeight="0dp"

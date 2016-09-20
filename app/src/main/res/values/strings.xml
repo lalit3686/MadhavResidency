@@ -5,4 +5,5 @@
     <string name="search_title">Search Contact Details</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
+    <string name="str_search_hint">Name or Block or Vehicle Number</string>
 </resources>
