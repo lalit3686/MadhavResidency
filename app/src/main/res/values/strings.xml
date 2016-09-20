@@ -2,4 +2,5 @@
 <resources>
 
     <string name="app_name">Madhav Residency</string>
+    <string name="search_title">Search Contact Details</string>
 </resources>

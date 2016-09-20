@@ -4,12 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.csvtocontact.MainActivity"
-    tools:ignore="MergeRootFrame" >
+    tools:ignore="MergeRootFrame">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize" />
 
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/lstContacts"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-    </ListView>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:animationCache="false"
+        android:divider="@color/Teal"
+        android:dividerHeight="0dp"
+        android:listSelector="#00000000"
+        android:scrollingCache="false"
+        android:smoothScrollbar="true"></ListView>
 
 </FrameLayout>

@@ -1,11 +1,12 @@
 package com.example.csvtocontact;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Madhav";
+    static boolean isInitialized = false;
     ArrayList<Contact> cArr = new ArrayList<Contact>();
     private Typeface myTypeface;
     private ListView lstView;
@@ -35,13 +37,26 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lstView = (ListView) findViewById(android.R.id.list);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
+        setSupportActionBar(toolbar);
+
+        lstView = (ListView) findViewById(R.id.lstContacts);
 
         mAdapter = new MySimpleArrayAdapter(this);
         lstView.setAdapter(mAdapter);
 
+
+        try {
+            if (!isInitialized) {
+                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+                isInitialized = true;
+            } else {
+                Log.d(TAG, "Already Initialized");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         DatabaseReference myRef = database.getReference("members");
         myRef.keepSynced(true);
