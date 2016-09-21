@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         }
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        DatabaseReference myRef = database.getReference("members");
+        DatabaseReference myRef = database.getReference("membersv2");
         myRef.keepSynced(true);
         myTypeface = Typeface.createFromAsset(
                 this.getAssets(),
@@ -104,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, dataSnapshot.getKey());
                     value = dataSnapshot.getValue(Contact.class);
                     value.Sr = dataSnapshot.getKey();
-                    addContacts(value);
+                    if (value.Name.trim().length() > 0) {
+                        addContacts(value);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
