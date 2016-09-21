@@ -3,9 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
     <item
+        android:id="@+id/actioncommittee"
+        android:icon="@drawable/ic_info_outline_white_36dp"
+        android:orderInCategory="200"
+        android:title="Support"
+        app:showAsAction="collapseActionView" />
+    <item
         android:id="@+id/actionabout"
         android:icon="@drawable/ic_info_outline_white_36dp"
         android:orderInCategory="200"
         android:title="About Me"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="collapseActionView" />
 </menu>

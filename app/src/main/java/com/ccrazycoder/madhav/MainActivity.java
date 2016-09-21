@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView lstView;
     private MySimpleArrayAdapter mAdapter;
     private EditText edtSearch;
+    private TextView txtError, txtNoRecords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         lstView = (ListView) findViewById(R.id.lstContacts);
+        txtError = (TextView) findViewById(R.id.txtError);
+        txtNoRecords = (TextView) findViewById(R.id.txtEmpty);
+
+        txtError.setVisibility(View.GONE);
 
         mAdapter = new MySimpleArrayAdapter(this);
         lstView.setAdapter(mAdapter);
@@ -76,64 +82,75 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        try {
-            if (!isInitialized) {
-                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-                isInitialized = true;
-            } else {
-                Log.d(TAG, "Already Initialized");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        DatabaseReference myRef = database.getReference("membersv2");
-        myRef.keepSynced(true);
+        if (isNetworkAvailable(MainActivity.this)) {
+            try {
+                if (!isInitialized) {
+                    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+                    isInitialized = true;
+                } else {
+                    Log.d(TAG, "Already Initialized");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+            DatabaseReference myRef = database.getReference("membersv2");
+            myRef.keepSynced(true);
+
+            cArr.clear();
+            myRef.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Contact value = null;
+                    try {
+                        Log.e(TAG, dataSnapshot.getKey());
+                        value = dataSnapshot.getValue(Contact.class);
+                        value.Sr = dataSnapshot.getKey();
+                        if (value.Name.trim().length() > 0) {
+                            addContacts(value);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    // Contact value = dataSnapshot.getValue(Contact.class);
+                    // int iIndex = cArr.indexOf(value);
+                    // cArr.set(iIndex, value);
+                    // mAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    // Contact value = dataSnapshot.getValue(Contact.class);
+                    // cArr.remove(Integer.parseInt(dataSnapshot.getKey()) - 1);
+                    // mAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+            lstView.setEmptyView(txtNoRecords);
+        } else {
+            lstView.setVisibility(View.GONE);
+            edtSearch.setVisibility(View.GONE);
+            txtError.setVisibility(View.VISIBLE);
+        }
         myTypeface = Typeface.createFromAsset(
                 this.getAssets(),
                 "fonts/Roboto-Regular.ttf");
-
         edtSearch.setTypeface(myTypeface);
-        cArr.clear();
-        myRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Contact value = null;
-                try {
-                    Log.e(TAG, dataSnapshot.getKey());
-                    value = dataSnapshot.getValue(Contact.class);
-                    value.Sr = dataSnapshot.getKey();
-                    if (value.Name.trim().length() > 0) {
-                        addContacts(value);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Contact value = dataSnapshot.getValue(Contact.class);
-                cArr.set(Integer.parseInt(dataSnapshot.getKey()) - 1, value);
-                mAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Contact value = dataSnapshot.getValue(Contact.class);
-                cArr.remove(Integer.parseInt(dataSnapshot.getKey()) - 1);
-                mAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        txtError.setTypeface(myTypeface);
     }
 
     @Override
@@ -161,6 +178,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void addContacts(Contact objContact) {
         cArr.add(objContact);
+    }
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
     public class MySimpleArrayAdapter extends BaseAdapter {

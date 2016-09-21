@@ -36,4 +36,25 @@
         android:scrollingCache="false"
         android:smoothScrollbar="true" />
 
+    <TextView
+        android:id="@+id/txtError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:drawableTop="@android:drawable/ic_menu_help"
+        android:text="@string/str_noconnectivity"
+        android:textColor="@color/Gray"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/txtEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:drawableTop="@android:drawable/ic_menu_info_details"
+        android:text="@string/str_norecords"
+        android:textColor="@color/Gray"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
 </RelativeLayout>

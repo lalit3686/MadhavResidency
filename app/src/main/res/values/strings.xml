@@ -5,7 +5,9 @@
     <string name="search_title">Search Contact Details</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
-    <string name="str_search_hint">Name or Block or Vehicle Number</string>
+    <string name="str_search_hint">Enter Name or Block or Vehicle Number</string>
     <string name="title_activity_about_me">AboutMe</string>
     <string name="str_aboutme_para">Hello Members,\nThis App was designed to help each of the Member of Madhav Residency ! \n\nStill We are in process of collecting Data. Let me know if there is any correction in the Any of the detail. We\'ll update that soon. We Required unique ID displayed on the Right Top of your Name. \n\nInform me on the given Contact Details.\n\nFeedbacks are highly appreciated !!!</string>
+    <string name="str_noconnectivity">Please Connect to Internet first</string>
+    <string name="str_norecords">Please Search again !!!</string>
 </resources>
