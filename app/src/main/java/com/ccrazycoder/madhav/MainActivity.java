@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (isNetworkAvailable(MainActivity.this)) {
+        if (Constants.isNetworkAvailable(MainActivity.this)) {
             try {
                 if (!isInitialized) {
                     FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -171,6 +170,10 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.actionabout) {
             startActivity(new Intent(MainActivity.this, AboutMe.class));
             return true;
+        }//noinspection SimplifiableIfStatement
+        else if (id == R.id.actioncommittee) {
+            startActivity(new Intent(MainActivity.this, Support.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -178,11 +181,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void addContacts(Contact objContact) {
         cArr.add(objContact);
-    }
-
-    public boolean isNetworkAvailable(final Context context) {
-        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
     public class MySimpleArrayAdapter extends BaseAdapter {
