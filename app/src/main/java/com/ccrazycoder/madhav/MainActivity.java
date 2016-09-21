@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Log.e(TAG, dataSnapshot.getKey());
                     value = dataSnapshot.getValue(Contact.class);
+                    value.Sr = dataSnapshot.getKey();
                     addContacts(value);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -183,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 vi = inflater.inflate(R.layout.row_list, null);
 
                 holder = new ViewHolder();
+                holder.index = (TextView) vi.findViewById(R.id.txtIndex);
                 holder.name = (TextView) vi.findViewById(R.id.txtName);
                 holder.block = (TextView) vi.findViewById(R.id.txtBlock);
                 holder.cellone = (TextView) vi.findViewById(R.id.txtMobile);
@@ -201,11 +204,21 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 vi.setBackgroundColor(Color.WHITE);
             }
+            holder.index.setTypeface(myTypeface);
             holder.name.setTypeface(myTypeface);
             holder.block.setTypeface(myTypeface);
             holder.cellone.setTypeface(myTypeface);
             holder.celltwo.setTypeface(myTypeface);
+            holder.carone.setTypeface(myTypeface);
+            holder.cartwo.setTypeface(myTypeface);
+            holder.vehicleone.setTypeface(myTypeface);
+            holder.vehicletwo.setTypeface(myTypeface);
 
+            int a = Integer.parseInt(filteredData.get(position).Sr);
+            DecimalFormat formatter = new DecimalFormat("000");
+            String aFormatted = formatter.format(a);
+
+            holder.index.setText(aFormatted);
             holder.name.setText(filteredData.get(position).Name);
             holder.block.setText(filteredData.get(position).Block + " - " + filteredData.get(position).Number);
 
@@ -225,28 +238,28 @@ public class MainActivity extends AppCompatActivity {
 
             if (filteredData.get(position).VehicleOne != null && filteredData.get(position).VehicleOne.length() > 0) {
                 holder.vehicleone.setVisibility(View.VISIBLE);
-                holder.vehicleone.setText(filteredData.get(position).VehicleOne);
+                holder.vehicleone.setText(filteredData.get(position).VehicleOne.toUpperCase());
             } else {
                 holder.vehicleone.setVisibility(View.GONE);
             }
 
             if (filteredData.get(position).VehicleTwo != null && filteredData.get(position).VehicleTwo.length() > 0) {
                 holder.vehicletwo.setVisibility(View.VISIBLE);
-                holder.vehicletwo.setText(filteredData.get(position).VehicleTwo);
+                holder.vehicletwo.setText(filteredData.get(position).VehicleTwo.toUpperCase());
             } else {
                 holder.vehicletwo.setVisibility(View.GONE);
             }
 
             if (filteredData.get(position).CarOne != null && filteredData.get(position).CarOne.length() > 0) {
                 holder.carone.setVisibility(View.VISIBLE);
-                holder.carone.setText(filteredData.get(position).CarOne);
+                holder.carone.setText(filteredData.get(position).CarOne.toUpperCase());
             } else {
                 holder.carone.setVisibility(View.GONE);
             }
 
             if (filteredData.get(position).CarTwo != null && filteredData.get(position).CarTwo.length() > 0) {
                 holder.cartwo.setVisibility(View.VISIBLE);
-                holder.cartwo.setText(filteredData.get(position).CarTwo);
+                holder.cartwo.setText(filteredData.get(position).CarTwo.toUpperCase());
             } else {
                 holder.cartwo.setVisibility(View.GONE);
             }
@@ -380,6 +393,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public class ViewHolder {
+            public TextView index;
             public TextView name;
             public TextView block;
             public TextView cellone;
